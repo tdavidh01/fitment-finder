@@ -412,6 +412,29 @@
       html { scroll-behavior: auto; }
       *, *::before, *::after { transition-duration: .01ms !important; }
     }
+
+    .vehicle-tool { margin-top: 1.25rem; }
+    .vehicle-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
+    .vehicle-panel { background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 1rem; min-width: 0; }
+    .vehicle-panel h3 { margin-top: 0; }
+    .field-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .8rem; }
+    .vehicle-tool label { display: block; color: var(--muted); font-size: .9rem; margin-bottom: .35rem; }
+    .vehicle-tool input, .vehicle-tool select { width: 100%; min-width: 0; padding: .75rem; border: 1px solid var(--line); border-radius: 10px; background: #0c1015; color: var(--text); font: inherit; }
+    .vehicle-tool .hint { color: var(--muted); font-size: .88rem; line-height: 1.5; }
+    .tool-actions { display: flex; flex-wrap: wrap; gap: .7rem; margin-top: 1rem; }
+    .tool-actions button { border: 1px solid var(--accent); border-radius: 10px; padding: .75rem 1rem; background: var(--accent); color: #fff; font: inherit; font-weight: 700; cursor: pointer; }
+    .tool-actions button.secondary { background: transparent; color: var(--text); border-color: var(--line); }
+    .tool-results { margin-top: 1rem; border: 1px solid var(--line); border-radius: 12px; padding: 1rem; background: var(--panel-2); }
+    .metric-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .7rem; margin-top: .8rem; }
+    .metric { padding: .8rem; border-radius: 10px; background: #0d1117; border: 1px solid var(--line); }
+    .metric strong { display: block; font-size: 1.15rem; margin-top: .25rem; }
+    .metric span { color: var(--muted); font-size: .82rem; }
+    .vehicle-status { margin-top: .6rem; color: var(--muted); font-size: .9rem; }
+    @media (max-width: 720px) {
+      .vehicle-grid, .field-grid { grid-template-columns: 1fr; }
+      .metric-grid { grid-template-columns: 1fr; }
+    }
+
   </style>
 </head>
 <body>
@@ -499,6 +522,111 @@
       </div>
       <div class="status" id="status" role="status">Enter your specs and compare the setups.</div>
       <p class="note">Positive outer movement means the new rim edge sits farther toward the fender. Positive inner movement means it extends farther toward suspension components. These are nominal rim-edge estimates, not measured tire sidewall positions or a guarantee of fitment.</p>
+    </section>
+
+
+    <section class="section vehicle-tool" aria-labelledby="vehicle-tool-title">
+      <h2 id="vehicle-tool-title">Vehicle, Suspension &amp; Fender Comparison</h2>
+      <p class="muted">Choose a vehicle and compare ride-height changes, tire sizing, and estimated wheel position. Vehicle lookup identifies the car; exact fender and suspension measurements must be verified for the specific trim and chassis.</p>
+
+      <div class="vehicle-grid">
+        <div class="vehicle-panel">
+          <h3>Vehicle details</h3>
+          <div class="field-grid">
+            <div>
+              <label for="vf-year">Model year</label>
+              <select id="vf-year"><option value="">Choose year</option></select>
+            </div>
+            <div>
+              <label for="vf-make">Make</label>
+              <select id="vf-make"><option value="">Choose make</option></select>
+            </div>
+            <div>
+              <label for="vf-model">Model</label>
+              <select id="vf-model" disabled><option value="">Choose make first</option></select>
+            </div>
+            <div>
+              <label for="vf-trim">Trim / configuration (optional)</label>
+              <input id="vf-trim" type="text" placeholder="e.g. GTI, Sport, 4-door">
+            </div>
+          </div>
+          <div class="tool-actions">
+            <button type="button" id="vf-lookup">Look up vehicle</button>
+          </div>
+          <p class="hint">This lookup uses the public NHTSA vehicle database for model-year, make, and model identification. It does not provide certified fender-lip, inner-clearance, or suspension-travel measurements.</p>
+          <p id="vf-vehicle-status" class="vehicle-status" role="status" aria-live="polite">Choose a year, make, and model to begin.</p>
+        </div>
+
+        <div class="vehicle-panel">
+          <h3>Measured vehicle baseline</h3>
+          <p class="hint">Enter measurements from the actual car, a trusted service manual, or a verified fitment source. Leave unknown values blank rather than guessing.</p>
+          <div class="field-grid">
+            <div>
+              <label for="vf-stock-gap">Stock tire-to-fender gap (in)</label>
+              <input id="vf-stock-gap" type="number" min="0" max="15" step="0.1" placeholder="e.g. 2.0">
+            </div>
+            <div>
+              <label for="vf-fender-clearance">Fender clearance from tire sidewall (in)</label>
+              <input id="vf-fender-clearance" type="number" min="-5" max="10" step="0.1" placeholder="e.g. 0.5">
+            </div>
+            <div>
+              <label for="vf-inner-clearance">Inner clearance to suspension (in)</label>
+              <input id="vf-inner-clearance" type="number" min="0" max="10" step="0.1" placeholder="e.g. 0.7">
+            </div>
+            <div>
+              <label for="vf-travel">Available bump travel (in)</label>
+              <input id="vf-travel" type="number" min="0" max="10" step="0.1" placeholder="e.g. 2.5">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="vehicle-panel" style="margin-top:1rem">
+        <h3>Compare suspension and wheel changes</h3>
+        <div class="field-grid">
+          <div>
+            <label for="vf-drop">Suspension drop (in)</label>
+            <input id="vf-drop" type="number" min="0" max="8" step="0.1" value="1.5">
+          </div>
+          <div>
+            <label for="vf-camber">Camber change (degrees, negative = more negative)</label>
+            <input id="vf-camber" type="number" min="-10" max="10" step="0.1" value="0">
+          </div>
+          <div>
+            <label for="vf-old-width">Current wheel width (in)</label>
+            <input id="vf-old-width" type="number" min="4" max="15" step="0.5" value="7">
+          </div>
+          <div>
+            <label for="vf-old-offset">Current wheel offset (ET, mm)</label>
+            <input id="vf-old-offset" type="number" min="-100" max="150" step="1" value="47">
+          </div>
+          <div>
+            <label for="vf-new-width">New wheel width (in)</label>
+            <input id="vf-new-width" type="number" min="4" max="15" step="0.5" value="7.5">
+          </div>
+          <div>
+            <label for="vf-new-offset">New wheel offset (ET, mm)</label>
+            <input id="vf-new-offset" type="number" min="-100" max="150" step="1" value="47">
+          </div>
+          <div>
+            <label for="vf-old-tire">Current tire size (e.g. 205/55R16)</label>
+            <input id="vf-old-tire" type="text" value="205/55R16" placeholder="205/55R16">
+          </div>
+          <div>
+            <label for="vf-new-tire">New tire size (e.g. 225/45R17)</label>
+            <input id="vf-new-tire" type="text" value="225/45R17" placeholder="225/45R17">
+          </div>
+        </div>
+        <div class="tool-actions">
+          <button type="button" id="vf-compare">Calculate comparison</button>
+          <button type="button" class="secondary" id="vf-reset">Reset comparison</button>
+        </div>
+        <div id="vf-results" class="tool-results" aria-live="polite">
+          <strong>Ready to compare</strong>
+          <p class="hint">Enter the wheel and tire setup, then calculate. Results are geometric estimates, not a guarantee against rubbing.</p>
+        </div>
+      </div>
+      <p class="hint">Important: static wheel-position math cannot predict all real-world rubbing. Fender shape, tire brand and actual section width, alignment, steering angle, loaded ride height, suspension travel, bushings, and chassis tolerances all affect clearance. Never treat an unverified vehicle measurement as factory-accurate.</p>
     </section>
 
     <section class="section" aria-labelledby="before-title">
@@ -648,6 +776,141 @@
     $("fitment-form").addEventListener("submit", calculateFitment);
     $("year").textContent = new Date().getFullYear();
     calculateFitment();
+
+  // Vehicle picker uses NHTSA's public vPIC API for vehicle identity only.
+  (() => {
+    const $ = (id) => document.getElementById(id);
+    const year = $("vf-year"), make = $("vf-make"), model = $("vf-model");
+    const status = $("vf-vehicle-status"), results = $("vf-results");
+
+    for (let y = new Date().getFullYear() + 1; y >= 1980; y--) {
+      const opt = document.createElement("option");
+      opt.value = String(y); opt.textContent = String(y); year.appendChild(opt);
+    }
+
+    async function loadMakes() {
+      make.innerHTML = '<option value="">Loading makes…</option>';
+      try {
+        const response = await fetch("https://vpic.nhtsa.dot.gov/api/vehicles/GetMakesForVehicleType/car?format=json");
+        if (!response.ok) throw new Error("Vehicle database request failed.");
+        const data = await response.json();
+        const names = [...new Set((data.Results || []).map(x => x.MakeName).filter(Boolean))].sort();
+        make.innerHTML = '<option value="">Choose make</option>' + names.map(n => `<option value="${escapeHtml(n)}">${escapeHtml(n)}</option>`).join("");
+      } catch (e) {
+        make.innerHTML = '<option value="">Could not load makes</option>';
+        status.textContent = "Vehicle lookup is unavailable right now. You can still use the comparison by entering the vehicle details and measured baseline manually.";
+      }
+    }
+
+    function escapeHtml(value) {
+      return String(value).replace(/[&<>"']/g, c => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c]));
+    }
+
+    make.addEventListener("change", async () => {
+      model.disabled = true;
+      model.innerHTML = '<option value="">Loading models…</option>';
+      if (!make.value) { model.innerHTML = '<option value="">Choose make first</option>'; return; }
+      const selectedYear = year.value || new Date().getFullYear();
+      try {
+        const url = `https://vpic.nhtsa.dot.gov/api/vehicles/GetModelsForMakeYear/make/${encodeURIComponent(make.value)}/modelyear/${encodeURIComponent(selectedYear)}/vehicleType/car?format=json`;
+        const response = await fetch(url);
+        if (!response.ok) throw new Error("Model lookup failed.");
+        const data = await response.json();
+        const names = [...new Set((data.Results || []).map(x => x.Model_Name).filter(Boolean))].sort();
+        model.innerHTML = '<option value="">Choose model</option>' + names.map(n => `<option value="${escapeHtml(n)}">${escapeHtml(n)}</option>`).join("");
+        model.disabled = false;
+        status.textContent = names.length ? "Select the model, then tap “Look up vehicle.”" : "No models were returned for this year and make. Try another year or enter measurements manually.";
+      } catch (e) {
+        model.innerHTML = '<option value="">Could not load models</option>';
+        status.textContent = "Could not load models. Try again later or enter measurements manually.";
+      }
+    });
+    year.addEventListener("change", () => { if (make.value) make.dispatchEvent(new Event("change")); });
+
+    $("vf-lookup").addEventListener("click", () => {
+      if (!year.value || !make.value || !model.value) {
+        status.textContent = "Choose a year, make, and model first.";
+        return;
+      }
+      status.textContent = `Selected: ${year.value} ${make.value} ${model.value}${$("vf-trim").value.trim() ? " — " + $("vf-trim").value.trim() : ""}. Vehicle identity found; exact body and suspension measurements still need a verified source or physical measurement.`;
+    });
+
+    function parseTire(value) {
+      const match = String(value).trim().match(/^(\d{3})\/(\d{2})R(\d{2})$/i);
+      if (!match) return null;
+      const width = Number(match[1]), aspect = Number(match[2]), rim = Number(match[3]);
+      const sidewall = width * aspect / 100 / 25.4;
+      return { width, aspect, rim, sidewall, diameter: rim + sidewall * 2, sectionIn: width / 25.4 };
+    }
+    function num(id) {
+      const el = $(id);
+      if (!el.value.trim()) return null;
+      const value = Number(el.value);
+      return Number.isFinite(value) ? value : null;
+    }
+    function fmt(value) { return `${value > 0 ? "+" : ""}${value.toFixed(2)} in`; }
+
+    $("vf-compare").addEventListener("click", () => {
+      const ids = ["vf-drop","vf-old-width","vf-old-offset","vf-new-width","vf-new-offset"];
+      if (ids.some(id => num(id) === null)) {
+        results.innerHTML = "<strong>Missing values</strong><p>Fill in suspension drop and both wheel widths and offsets.</p>";
+        return;
+      }
+      const oldTire = parseTire($("vf-old-tire").value), newTire = parseTire($("vf-new-tire").value);
+      if (!oldTire || !newTire) {
+        results.innerHTML = "<strong>Check tire sizes</strong><p>Use a format like 205/55R16 or 225/45R17.</p>";
+        return;
+      }
+
+      const ow = num("vf-old-width"), oo = num("vf-old-offset");
+      const nw = num("vf-new-width"), no = num("vf-new-offset");
+      const drop = num("vf-drop") || 0;
+      // Nominal rim-edge position changes: positive poke means farther outward.
+      const outer = ((nw * 25.4 / 2 - no) - (ow * 25.4 / 2 - oo)) / 25.4;
+      const inner = (((nw * 25.4 / 2 + no) - (ow * 25.4 / 2 + oo))) / 25.4;
+      const tireOuter = (newTire.sectionIn - oldTire.sectionIn) / 2 + outer;
+      const tireInner = (newTire.sectionIn - oldTire.sectionIn) / 2 + inner;
+      const diameterChange = newTire.diameter - oldTire.diameter;
+      const radiusChange = diameterChange / 2;
+      const gap = num("vf-stock-gap");
+      const fender = num("vf-fender-clearance");
+      const innerClear = num("vf-inner-clearance");
+      const travel = num("vf-travel");
+      const camber = num("vf-camber") || 0;
+      const gapAfter = gap === null ? null : gap - drop - radiusChange;
+
+      const metric = (label, value) => `<div class="metric"><span>${label}</span><strong>${value}</strong></div>`;
+      let output = `<strong>Estimated comparison</strong><div class="metric-grid">`;
+      output += metric("Wheel outer-edge change", fmt(outer));
+      output += metric("Wheel inner-edge change", fmt(inner));
+      output += metric("Tire outer-section change*", fmt(tireOuter));
+      output += metric("Tire inner-section change*", fmt(tireInner));
+      output += metric("Overall tire diameter change", fmt(diameterChange));
+      output += metric("Tire radius change", fmt(radiusChange));
+      output += `</div>`;
+      output += `<p>Suspension drop entered: <strong>${drop.toFixed(2)} in</strong>.`;
+      if (gapAfter !== null) output += ` Estimated tire-to-fender gap after drop: <strong>${gapAfter.toFixed(2)} in</strong> (assuming a vertical static drop and no other geometry changes).`;
+      output += `</p>`;
+      if (fender !== null) output += `<p>Entered baseline fender clearance: ${fender.toFixed(2)} in. Approximate static sidewall clearance after the wheel/tire change: <strong>${(fender - tireOuter).toFixed(2)} in</strong> before considering camber, body shape, steering, or suspension movement.</p>`;
+      if (innerClear !== null) output += `<p>Entered baseline inner clearance: ${innerClear.toFixed(2)} in. Approximate static inner clearance after the change: <strong>${(innerClear - tireInner).toFixed(2)} in</strong> before suspension movement and steering.</p>`;
+      if (travel !== null) output += `<p>Entered available bump travel: ${travel.toFixed(2)} in. Lowering by ${drop.toFixed(2)} in may reduce available travel if the suspension is not reconfigured, but the actual remaining travel cannot be calculated from drop alone.</p>`;
+      if (camber !== 0) output += `<p>Camber adjustment entered: ${camber.toFixed(1)}°. This version records the value but does not convert camber into a clearance prediction because tire position depends on wheel diameter, suspension geometry, and measurement height.</p>`;
+      output += `<p class="hint">*Tire calculations use nominal tire size as an approximation; actual tire section width varies by tire model and rim width. Positive outer-edge change means farther outward. These figures compare static geometry and do not certify fitment.</p>`;
+      results.innerHTML = output;
+    });
+
+    $("vf-reset").addEventListener("click", () => {
+      $("vf-drop").value = "1.5"; $("vf-camber").value = "0";
+      $("vf-old-width").value = "7"; $("vf-old-offset").value = "47";
+      $("vf-new-width").value = "7.5"; $("vf-new-offset").value = "47";
+      $("vf-old-tire").value = "205/55R16"; $("vf-new-tire").value = "225/45R17";
+      ["vf-stock-gap","vf-fender-clearance","vf-inner-clearance","vf-travel"].forEach(id => $(id).value = "");
+      results.innerHTML = '<strong>Ready to compare</strong><p class="hint">Enter the wheel and tire setup, then calculate. Results are geometric estimates, not a guarantee against rubbing.</p>';
+    });
+
+    loadMakes();
+  })();
+
   </script>
 </body>
 </html>
