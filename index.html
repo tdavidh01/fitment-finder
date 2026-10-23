@@ -1,0 +1,653 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Free wheel fitment calculator. Compare wheel width, offset, tire size, rim movement, and overall tire diameter before buying wheels.">
+  <meta name="theme-color" content="#080a0d">
+  <title>Fitment Finder — Free Wheel Fitment Calculator</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #080a0d;
+      --panel: #11151b;
+      --panel-2: #191f28;
+      --text: #f5f6f8;
+      --muted: #a1aab6;
+      --line: #303843;
+      --accent: #ff3b30;
+      --accent-soft: #ffb0aa;
+      --success-bg: #15231f;
+      --success-text: #c9f8e5;
+      --success-line: #2b5748;
+      --warning-bg: #2a1d11;
+      --warning-text: #ffe1ae;
+      --warning-line: #765126;
+    }
+
+    * { box-sizing: border-box; }
+
+    html {
+      scroll-behavior: smooth;
+      scroll-padding-top: 1rem;
+    }
+
+    body {
+      margin: 0;
+      background:
+        radial-gradient(ellipse at 85% 2%, rgba(255, 59, 48, .16), transparent 30%),
+        radial-gradient(ellipse at 5% 30%, rgba(255, 255, 255, .035), transparent 28%),
+        var(--bg);
+      color: var(--text);
+      font: 16px/1.55 Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      letter-spacing: .01em;
+    }
+
+    a { color: var(--accent-soft); }
+    button, input { font: inherit; }
+
+    .wrap {
+      width: min(1160px, 92%);
+      margin-inline: auto;
+    }
+
+    .nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 18px 0;
+      border-bottom: 1px solid #343a43;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      font-size: 1.05rem;
+      font-weight: 900;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .brand::before {
+      content: "";
+      display: inline-block;
+      width: 27px;
+      height: 27px;
+      flex: 0 0 27px;
+      border: 4px solid var(--accent);
+      border-radius: 50%;
+      box-shadow: inset 0 0 0 4px var(--bg), inset 0 0 0 6px var(--accent);
+      transform: skew(-12deg);
+    }
+
+    .brand span { color: var(--accent); }
+
+    .pill {
+      padding: 7px 10px;
+      border: 1px solid #74332f;
+      border-radius: 4px;
+      background: #1b1112;
+      color: var(--accent-soft);
+      font-size: .68rem;
+      font-weight: 800;
+      letter-spacing: 1px;
+      text-align: center;
+      text-transform: uppercase;
+    }
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      max-width: none;
+      margin: 26px 0 22px;
+      padding: clamp(36px, 7vw, 78px) clamp(22px, 5vw, 58px) 42px;
+      border: 1px solid #343a43;
+      border-radius: 18px;
+      background:
+        linear-gradient(105deg, rgba(8, 10, 13, .98), rgba(8, 10, 13, .92) 53%, rgba(34, 17, 18, .75)),
+        repeating-linear-gradient(135deg, transparent 0 12px, rgba(255, 255, 255, .025) 12px 13px);
+      box-shadow: 0 24px 70px #0007;
+    }
+
+    .hero::after {
+      content: "FF";
+      position: absolute;
+      right: 3%;
+      bottom: -27%;
+      color: rgba(255, 59, 48, .075);
+      font-size: clamp(9rem, 24vw, 20rem);
+      font-style: italic;
+      font-weight: 1000;
+      letter-spacing: -.12em;
+      line-height: 1;
+      pointer-events: none;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      color: var(--accent);
+      font-size: .72rem;
+      font-weight: 900;
+      letter-spacing: 2.4px;
+      text-transform: uppercase;
+    }
+
+    .eyebrow::before {
+      content: "";
+      display: inline-block;
+      width: 25px;
+      height: 3px;
+      background: var(--accent);
+    }
+
+    .hero h1 {
+      position: relative;
+      z-index: 1;
+      max-width: 850px;
+      margin: 17px 0 20px;
+      font-size: clamp(2.3rem, 6.6vw, 5rem);
+      font-weight: 950;
+      letter-spacing: -.055em;
+      line-height: .98;
+      text-transform: uppercase;
+    }
+
+    .hero h1 span {
+      color: var(--accent);
+    }
+
+    .hero p {
+      position: relative;
+      z-index: 1;
+      max-width: 660px;
+      margin-bottom: 0;
+      color: #b7bec8;
+      font-size: 1.04rem;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+      margin: 18px 0;
+    }
+
+    .card {
+      position: relative;
+      overflow: hidden;
+      padding: clamp(18px, 3vw, 27px);
+      border: 1px solid #303741;
+      border-radius: 14px;
+      background: linear-gradient(150deg, #171c23, #0f1217);
+      box-shadow: 0 14px 35px #0004;
+    }
+
+    .card h2,
+    .section h2 {
+      font-size: 1.1rem;
+      font-weight: 900;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+    }
+
+    .card h2 { margin: 0 0 5px; }
+    .card h2::before { content: "/ "; color: var(--accent); }
+
+    .sub {
+      margin: 0 0 20px;
+      color: #9ca6b3;
+      font-size: .9rem;
+    }
+
+    .fields {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .field label {
+      display: block;
+      margin-bottom: 6px;
+      color: #aeb6c1;
+      font-size: .8rem;
+      font-weight: 700;
+      letter-spacing: .02em;
+    }
+
+    .field input {
+      width: 100%;
+      min-width: 0;
+      padding: 12px;
+      border: 1px solid #3a424e;
+      border-radius: 7px;
+      background: #090c10;
+      color: var(--text);
+      transition: border-color .15s, box-shadow .15s;
+    }
+
+    .field input:focus-visible,
+    .btn:focus-visible,
+    a:focus-visible,
+    summary:focus-visible {
+      outline: 2px solid var(--accent-soft);
+      outline-offset: 3px;
+    }
+
+    .field input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px #ff3b3024;
+    }
+
+    .btn {
+      padding: 13px 18px;
+      border: 0;
+      border-radius: 7px;
+      background: var(--accent);
+      box-shadow: 0 7px 20px #ff3b3025;
+      color: #fff;
+      font-weight: 900;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: transform .15s, filter .15s;
+    }
+
+    .btn:hover {
+      filter: brightness(1.12);
+      transform: translateY(-1px);
+    }
+
+    .full {
+      width: 100%;
+      margin-top: 18px;
+    }
+
+    .result {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    .metric {
+      padding: 14px;
+      border: 1px solid #303741;
+      border-radius: 9px;
+      background: #0b0e12;
+    }
+
+    .metric small {
+      display: block;
+      color: #9ca6b3;
+      font-size: .78rem;
+    }
+
+    .metric strong {
+      display: block;
+      margin-top: 4px;
+      color: #fff;
+      font-size: 1.25rem;
+      font-variant-numeric: tabular-nums;
+      overflow-wrap: anywhere;
+    }
+
+    .status {
+      margin-top: 14px;
+      padding: 13px 15px;
+      border: 1px solid var(--success-line);
+      border-radius: 8px;
+      background: var(--success-bg);
+      color: var(--success-text);
+    }
+
+    .status.warn {
+      border-color: var(--warning-line);
+      background: var(--warning-bg);
+      color: var(--warning-text);
+    }
+
+    .note {
+      color: var(--muted);
+      font-size: .88rem;
+    }
+
+    .section { padding: 20px 0; }
+    .section h2 { font-size: 1.45rem; }
+
+    .three {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .mini {
+      padding: 19px;
+      border: 1px solid #2e3540;
+      border-radius: 10px;
+      background: linear-gradient(145deg, #151a21, #0c0f13);
+    }
+
+    .mini h3 {
+      margin: 0 0 7px;
+      font-size: .92rem;
+      letter-spacing: .025em;
+      text-transform: uppercase;
+    }
+
+    .mini h3::before { content: "▸ "; color: var(--accent); }
+
+    .mini p {
+      margin: 0;
+      color: var(--muted);
+      font-size: .92rem;
+    }
+
+    .faq details {
+      padding: 15px 0;
+      border-bottom: 1px solid #2e3540;
+    }
+
+    .faq summary {
+      font-size: .96rem;
+      font-weight: 750;
+      cursor: pointer;
+    }
+
+    .faq summary::marker { color: var(--accent); }
+    .faq p { color: var(--muted); }
+
+    footer {
+      margin-top: 35px;
+      padding: 25px 0 45px;
+      border-top: 1px solid #343a43;
+      background: #090b0e;
+      color: var(--muted);
+      font-size: .85rem;
+    }
+
+    .links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+
+    .adslot { display: none; }
+
+    @media (max-width: 760px) {
+      .grid,
+      .three { grid-template-columns: 1fr; }
+
+      .hero {
+        margin-top: 16px;
+        padding: 36px 22px 28px;
+        border-radius: 12px;
+      }
+
+      .hero::after {
+        right: 0;
+        bottom: -9%;
+        font-size: 9rem;
+      }
+
+      .hero h1 { letter-spacing: -.045em; }
+      .nav { align-items: center; }
+      .pill { max-width: 48%; font-size: .6rem; }
+      .card { padding: 18px; }
+      .metric { padding: 12px; }
+    }
+
+    @media (max-width: 360px) {
+      .brand { gap: 6px; font-size: .88rem; letter-spacing: .8px; }
+      .brand::before { width: 22px; height: 22px; flex-basis: 22px; }
+      .fields { gap: 10px; }
+      .field input { padding: 10px 8px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after { transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <header class="wrap nav">
+    <a class="brand" href="#top" aria-label="Fitment Finder home">FITMENT<span>FINDER</span></a>
+    <div class="pill">Wheel Fitment Tool</div>
+  </header>
+
+  <main class="wrap" id="top">
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="eyebrow">Street / Track Fitment Lab</div>
+      <h1 id="hero-title">Dial in your <span>fitment.</span></h1>
+      <p>A wheel-and-tire fitment tool built for car people. Compare wheel offsets, estimate rim-edge movement, and check tire diameter changes before you spend your money.</p>
+    </section>
+
+    <form id="fitment-form">
+      <div class="grid">
+        <section class="card" aria-labelledby="current-title">
+          <h2 id="current-title">Current setup</h2>
+          <p class="sub">Enter the wheel and tire specs on your car now.</p>
+          <div class="fields">
+            <div class="field">
+              <label for="cw">Wheel width (in)</label>
+              <input id="cw" name="cw" type="number" min="4" max="15" step="0.25" value="7" required>
+            </div>
+            <div class="field">
+              <label for="co">Wheel offset (ET, mm)</label>
+              <input id="co" name="co" type="number" min="-100" max="100" step="1" value="47" required>
+            </div>
+            <div class="field">
+              <label for="ctw">Tire width (mm)</label>
+              <input id="ctw" name="ctw" type="number" min="100" max="400" step="1" value="205" required>
+            </div>
+            <div class="field">
+              <label for="ctr">Aspect ratio (%)</label>
+              <input id="ctr" name="ctr" type="number" min="20" max="100" step="1" value="55" required>
+            </div>
+            <div class="field">
+              <label for="cr">Wheel diameter (in)</label>
+              <input id="cr" name="cr" type="number" min="10" max="30" step="0.5" value="16" required>
+            </div>
+          </div>
+        </section>
+
+        <section class="card" aria-labelledby="new-title">
+          <h2 id="new-title">New setup</h2>
+          <p class="sub">Enter the specs you're thinking of buying.</p>
+          <div class="fields">
+            <div class="field">
+              <label for="nw">Wheel width (in)</label>
+              <input id="nw" name="nw" type="number" min="4" max="15" step="0.25" value="7.5" required>
+            </div>
+            <div class="field">
+              <label for="no">Wheel offset (ET, mm)</label>
+              <input id="no" name="no" type="number" min="-100" max="100" step="1" value="47" required>
+            </div>
+            <div class="field">
+              <label for="ntw">Tire width (mm)</label>
+              <input id="ntw" name="ntw" type="number" min="100" max="400" step="1" value="225" required>
+            </div>
+            <div class="field">
+              <label for="ntr">Aspect ratio (%)</label>
+              <input id="ntr" name="ntr" type="number" min="20" max="100" step="1" value="45" required>
+            </div>
+            <div class="field">
+              <label for="nr">Wheel diameter (in)</label>
+              <input id="nr" name="nr" type="number" min="10" max="30" step="0.5" value="17" required>
+            </div>
+          </div>
+          <button class="btn full" type="submit">Compare my fitment</button>
+        </section>
+      </div>
+    </form>
+
+    <section class="card" aria-labelledby="results-title" aria-live="polite" aria-atomic="false">
+      <h2 id="results-title">Your fitment comparison</h2>
+      <p class="sub">Estimates are based on the dimensions entered above.</p>
+      <div class="result">
+        <div class="metric"><small>Outer rim edge moves</small><strong id="outer">—</strong></div>
+        <div class="metric"><small>Inner rim edge moves</small><strong id="inner">—</strong></div>
+        <div class="metric"><small>Current tire diameter</small><strong id="oldDia">—</strong></div>
+        <div class="metric"><small>New tire diameter</small><strong id="newDia">—</strong></div>
+        <div class="metric"><small>Diameter difference</small><strong id="diaDiff">—</strong></div>
+        <div class="metric"><small>At indicated 60 mph</small><strong id="speed">—</strong></div>
+      </div>
+      <div class="status" id="status" role="status">Enter your specs and compare the setups.</div>
+      <p class="note">Positive outer movement means the new rim edge sits farther toward the fender. Positive inner movement means it extends farther toward suspension components. These are nominal rim-edge estimates, not measured tire sidewall positions or a guarantee of fitment.</p>
+    </section>
+
+    <section class="section" aria-labelledby="before-title">
+      <h2 id="before-title">Before you order wheels</h2>
+      <div class="three">
+        <article class="mini">
+          <h3>Check your bolt pattern</h3>
+          <p>Make sure the wheel's bolt pattern matches your vehicle. Never assume a wheel fits based on diameter alone.</p>
+        </article>
+        <article class="mini">
+          <h3>Confirm hub bore &amp; hardware</h3>
+          <p>Check center bore, lug bolt or nut seat type, thread size, and safe engagement. Spacers may require specific longer hardware.</p>
+        </article>
+        <article class="mini">
+          <h3>Check real-world clearance</h3>
+          <p>Suspension, brakes, tire brand, ride height, alignment, and fender shape affect fit. Confirm fitment with a qualified professional before driving.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section faq" aria-labelledby="faq-title">
+      <h2 id="faq-title">Wheel fitment FAQ</h2>
+      <details>
+        <summary>Does this calculator guarantee a wheel will fit?</summary>
+        <p>No. It compares dimensions mathematically, but cannot verify brake clearance, suspension clearance, fender clearance, load rating, or vehicle-specific fitment. Always confirm with a qualified wheel/tire professional.</p>
+      </details>
+      <details>
+        <summary>What does wheel offset mean?</summary>
+        <p>Offset (ET) is the distance in millimeters between the wheel's mounting face and its centerline. A higher positive offset generally moves the wheel farther inward; a lower offset generally moves it outward.</p>
+      </details>
+      <details>
+        <summary>Will a wider tire always stick out farther?</summary>
+        <p>Not always. Wheel width, offset, tire model, and the rim's measured width all affect the final position. This tool estimates nominal rim position only; tire sidewall shape can vary.</p>
+      </details>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <div class="links">
+        <a href="#top">Back to top</a>
+      </div>
+      <p>© <span id="year"></span> Fitment Finder. Informational estimates only. Verify specifications with your vehicle and wheel manufacturer before purchasing or driving.</p>
+      <p>Disclosure: Affiliate links, if added, may earn the site a commission at no extra cost to the buyer.</p>
+    </div>
+  </footer>
+
+  <script>
+    "use strict";
+
+    const $ = (id) => document.getElementById(id);
+
+    const fields = [
+      ["cw", "Current wheel width", 4, 15],
+      ["co", "Current offset", -100, 100],
+      ["ctw", "Current tire width", 100, 400],
+      ["ctr", "Current aspect ratio", 20, 100],
+      ["cr", "Current wheel diameter", 10, 30],
+      ["nw", "New wheel width", 4, 15],
+      ["no", "New offset", -100, 100],
+      ["ntw", "New tire width", 100, 400],
+      ["ntr", "New aspect ratio", 20, 100],
+      ["nr", "New wheel diameter", 10, 30]
+    ];
+
+    const outputIds = ["outer", "inner", "oldDia", "newDia", "diaDiff", "speed"];
+
+    function getValue(id) {
+      return Number($(id).value);
+    }
+
+    function tireDiameterMm(tireWidthMm, aspectRatio, wheelDiameterIn) {
+      return wheelDiameterIn * 25.4 + 2 * tireWidthMm * (aspectRatio / 100);
+    }
+
+    function formatSignedMm(value) {
+      const rounded = Math.abs(value) < 0.05 ? 0 : value;
+      return `${rounded > 0 ? "+" : ""}${rounded.toFixed(1)} mm`;
+    }
+
+    function setStatus(message, isWarning = false) {
+      const status = $("status");
+      status.textContent = message;
+      status.className = isWarning ? "status warn" : "status";
+    }
+
+    function clearResults() {
+      for (const id of outputIds) $(id).textContent = "—";
+    }
+
+    function validateInputs() {
+      for (const [id, label, min, max] of fields) {
+        const input = $(id);
+        const value = input.valueAsNumber;
+
+        if (input.value.trim() === "" || !Number.isFinite(value) || value < min || value > max) {
+          input.focus();
+          setStatus(`${label} must be between ${min} and ${max}.`, true);
+          clearResults();
+          return false;
+        }
+      }
+      return true;
+    }
+
+    function calculateFitment(event) {
+      if (event) event.preventDefault();
+      if (!validateInputs()) return;
+
+      const cw = getValue("cw");
+      const co = getValue("co");
+      const ctw = getValue("ctw");
+      const ctr = getValue("ctr");
+      const cr = getValue("cr");
+
+      const nw = getValue("nw");
+      const no = getValue("no");
+      const ntw = getValue("ntw");
+      const ntr = getValue("ntr");
+      const nr = getValue("nr");
+
+      // Nominal rim-edge movement in mm; excludes tire sidewall shape and tolerances.
+      const outerMovement = ((nw - cw) * 25.4 / 2) - (no - co);
+      const innerMovement = ((nw - cw) * 25.4 / 2) + (no - co);
+
+      const oldDiameter = tireDiameterMm(ctw, ctr, cr);
+      const newDiameter = tireDiameterMm(ntw, ntr, nr);
+      const diameterDifference = newDiameter - oldDiameter;
+      const percentageDifference = (diameterDifference / oldDiameter) * 100;
+
+      $("outer").textContent = formatSignedMm(outerMovement);
+      $("inner").textContent = formatSignedMm(innerMovement);
+      $("oldDia").textContent = `${(oldDiameter / 25.4).toFixed(2)} in`;
+      $("newDia").textContent = `${(newDiameter / 25.4).toFixed(2)} in`;
+      $("diaDiff").textContent = `${formatSignedMm(diameterDifference)} (${percentageDifference > 0 ? "+" : ""}${percentageDifference.toFixed(2)}%)`;
+
+      // Assumes the speedometer was accurate with the current tire diameter.
+      $("speed").textContent = `${(60 * newDiameter / oldDiameter).toFixed(1)} mph actual (approx.)`;
+
+      if (Math.abs(percentageDifference) > 3) {
+        setStatus("Tire diameter changes by more than 3%. Verify speedometer accuracy, gearing, and vehicle clearance before purchasing.", true);
+      } else {
+        setStatus("Comparison calculated. This is a dimensional estimate only; verify suspension, fender, brake, and hardware clearance before buying.");
+      }
+    }
+
+    $("fitment-form").addEventListener("submit", calculateFitment);
+    $("year").textContent = new Date().getFullYear();
+    calculateFitment();
+  </script>
+</body>
+</html>
