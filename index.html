@@ -1,12 +1,4 @@
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Free wheel fitment calculator. Compare wheel width, offset, tire size, rim movement, and overall tire diameter before buying wheels.">
-  <meta name="theme-color" content="#080a0d">
-  <title>Fitment Finder — Free Wheel Fitment Calculator</title>
-  <style>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="theme-color" content="#080a0d"><meta name="description" content="Free wheel and tire fitment calculators, vehicle setup comparison, and rubbing troubleshooting tools."><title>Fitment Tools | Fitment Finder</title><style>
     :root {
       color-scheme: dark;
       --bg: #080a0d;
@@ -63,27 +55,18 @@
     .brand {
       display: inline-flex;
       align-items: center;
-      gap: 9px;
-      font-size: 1.05rem;
-      font-weight: 900;
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-      white-space: nowrap;
+      flex: 0 1 auto;
+      min-width: 0;
+      text-decoration: none;
     }
 
-    .brand::before {
-      content: "";
-      display: inline-block;
-      width: 27px;
-      height: 27px;
-      flex: 0 0 27px;
-      border: 4px solid var(--accent);
-      border-radius: 50%;
-      box-shadow: inset 0 0 0 4px var(--bg), inset 0 0 0 6px var(--accent);
-      transform: skew(-12deg);
+    .brand img {
+      display: block;
+      width: 178px;
+      max-width: min(34vw, 200px);
+      height: auto;
+      object-fit: contain;
     }
-
-    .brand span { color: var(--accent); }
 
     .pill {
       padding: 7px 10px;
@@ -378,6 +361,23 @@
 
     .adslot { display: none; }
 
+    .nav-links { display:flex; flex-wrap:wrap; gap:12px; justify-content:flex-end; }
+    .nav-links a { color:var(--text); text-decoration:none; font-size:.82rem; font-weight:750; }
+    .nav-links a:hover { color:var(--accent-soft); }
+    .legal-panel { padding:18px; border:1px solid var(--line); border-radius:12px; background:var(--panel); margin:12px 0; }
+    .legal-panel h3 { margin-top:0; }
+    .guide-list { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; }
+    .guide-list article { padding:16px; border:1px solid var(--line); border-radius:10px; background:var(--panel); }
+    .guide-list h3 { margin-top:0; font-size:1rem; }
+    .problem-form { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; }
+    .problem-form label { display:block; color:var(--muted); font-size:.9rem; margin-bottom:5px; }
+    .problem-form select, .problem-form input, .problem-form textarea { width:100%; padding:11px; border:1px solid var(--line); border-radius:8px; background:#090c10; color:var(--text); font:inherit; }
+    .wide { grid-column:1/-1; }
+    .notice { border-left:4px solid var(--accent); padding:12px 15px; background:#1a1113; color:#e9d8d7; border-radius:5px; }
+    .metric-grid .metric { min-width:0; }
+    @media(max-width:850px) { .nav { align-items:flex-start; flex-direction:column; } .brand img { width:180px; max-width:68vw; } .nav-links { justify-content:flex-start; width:100%; } .guide-list { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+    @media(max-width:560px) { .guide-list,.problem-form { grid-template-columns:1fr; } .wide { grid-column:auto; } }
+
     @media (max-width: 760px) {
       .grid,
       .three { grid-template-columns: 1fr; }
@@ -402,8 +402,7 @@
     }
 
     @media (max-width: 360px) {
-      .brand { gap: 6px; font-size: .88rem; letter-spacing: .8px; }
-      .brand::before { width: 22px; height: 22px; flex-basis: 22px; }
+      .brand img { width: 148px; max-width: 48vw; }
       .fields { gap: 10px; }
       .field input { padding: 10px 8px; }
     }
@@ -435,246 +434,335 @@
       .metric-grid { grid-template-columns: 1fr; }
     }
 
-  </style>
-</head>
-<body>
-  <header class="wrap nav">
-    <a class="brand" href="#top" aria-label="Fitment Finder home">FITMENT<span>FINDER</span></a>
-    <div class="pill">Wheel Fitment Tool</div>
-  </header>
+  
 
-  <main class="wrap" id="top">
-    <section class="hero" aria-labelledby="hero-title">
-      <div class="eyebrow">Street / Track Fitment Lab</div>
-      <h1 id="hero-title">Dial in your <span>fitment.</span></h1>
-      <p>A wheel-and-tire fitment tool built for car people. Compare wheel offsets, estimate rim-edge movement, and check tire diameter changes before you spend your money.</p>
-    </section>
+/* Multi-page navigation and visual polish */
+.nav { position:relative; gap:18px; flex-wrap:wrap; }
+.nav-links { display:flex; flex-wrap:wrap; gap:9px; align-items:center; }
+.nav-links a, .nav-links summary { display:inline-flex; align-items:center; justify-content:center; padding:10px 14px; border:1px solid #363d48; border-radius:10px; background:linear-gradient(145deg,#1b2029,#101319); color:#f5f6f8; text-decoration:none; font-size:.84rem; font-weight:800; transition:transform .15s,border-color .15s,background .15s; cursor:pointer; }
+.nav-links a:hover, .nav-links summary:hover { transform:translateY(-2px); border-color:var(--accent); background:#241719; color:#fff; }
+.nav-links a.active { border-color:var(--accent); box-shadow:inset 0 -2px var(--accent); }
+.nav-links details { position:relative; } .nav-links details[open] .dropdown { display:grid; }
+.dropdown { display:none; position:absolute; z-index:20; top:calc(100% + 8px); left:0; min-width:190px; padding:8px; gap:6px; border:1px solid var(--line); border-radius:12px; background:#101319; box-shadow:0 16px 36px #0009; }
+.dropdown a { justify-content:flex-start; white-space:nowrap; }
+.page-intro { padding:32px clamp(20px,4vw,40px); margin:24px 0; border:1px solid var(--line); border-radius:16px; background:linear-gradient(120deg,#171b22,#171012); }
+.page-intro h1 { margin:.4rem 0; font-size:clamp(2rem,5vw,3.5rem); line-height:1.05; letter-spacing:-.04em; text-transform:uppercase; }
+.page-intro h1 span { color:var(--accent); }
+.page-cards { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:14px; margin:22px 0; }
+.page-card { display:flex; flex-direction:column; min-height:175px; padding:22px; border:1px solid var(--line); border-radius:14px; background:linear-gradient(150deg,#171c23,#0f1217); color:var(--text); text-decoration:none; transition:transform .16s,border-color .16s; }
+.page-card:hover { transform:translateY(-3px); border-color:var(--accent); } .page-card .card-icon { color:var(--accent); font-size:1.4rem; font-weight:900; } .page-card h2 { margin:10px 0 6px; font-size:1.05rem; } .page-card p { color:var(--muted); margin:0 0 14px; font-size:.92rem; } .page-card .card-cta { margin-top:auto; color:var(--accent-soft); font-weight:800; }
+@media(max-width:760px){ .page-cards{grid-template-columns:1fr;} .nav-links a,.nav-links summary{padding:9px 11px;} .dropdown{position:static;box-shadow:none;margin-top:6px;} }
 
-    <form id="fitment-form">
-      <div class="grid">
-        <section class="card" aria-labelledby="current-title">
-          <h2 id="current-title">Current setup</h2>
-          <p class="sub">Enter the wheel and tire specs on your car now.</p>
-          <div class="fields">
-            <div class="field">
-              <label for="cw">Wheel width (in)</label>
-              <input id="cw" name="cw" type="number" min="4" max="15" step="0.25" value="7" required>
-            </div>
-            <div class="field">
-              <label for="co">Wheel offset (ET, mm)</label>
-              <input id="co" name="co" type="number" min="-100" max="100" step="1" value="47" required>
-            </div>
-            <div class="field">
-              <label for="ctw">Tire width (mm)</label>
-              <input id="ctw" name="ctw" type="number" min="100" max="400" step="1" value="205" required>
-            </div>
-            <div class="field">
-              <label for="ctr">Aspect ratio (%)</label>
-              <input id="ctr" name="ctr" type="number" min="20" max="100" step="1" value="55" required>
-            </div>
-            <div class="field">
-              <label for="cr">Wheel diameter (in)</label>
-              <input id="cr" name="cr" type="number" min="10" max="30" step="0.5" value="16" required>
-            </div>
-          </div>
-        </section>
-
-        <section class="card" aria-labelledby="new-title">
-          <h2 id="new-title">New setup</h2>
-          <p class="sub">Enter the specs you're thinking of buying.</p>
-          <div class="fields">
-            <div class="field">
-              <label for="nw">Wheel width (in)</label>
-              <input id="nw" name="nw" type="number" min="4" max="15" step="0.25" value="7.5" required>
-            </div>
-            <div class="field">
-              <label for="no">Wheel offset (ET, mm)</label>
-              <input id="no" name="no" type="number" min="-100" max="100" step="1" value="47" required>
-            </div>
-            <div class="field">
-              <label for="ntw">Tire width (mm)</label>
-              <input id="ntw" name="ntw" type="number" min="100" max="400" step="1" value="225" required>
-            </div>
-            <div class="field">
-              <label for="ntr">Aspect ratio (%)</label>
-              <input id="ntr" name="ntr" type="number" min="20" max="100" step="1" value="45" required>
-            </div>
-            <div class="field">
-              <label for="nr">Wheel diameter (in)</label>
-              <input id="nr" name="nr" type="number" min="10" max="30" step="0.5" value="17" required>
-            </div>
-          </div>
-          <button class="btn full" type="submit">Compare my fitment</button>
-        </section>
-      </div>
-    </form>
-
-    <section class="card" aria-labelledby="results-title" aria-live="polite" aria-atomic="false">
-      <h2 id="results-title">Your fitment comparison</h2>
-      <p class="sub">Estimates are based on the dimensions entered above.</p>
-      <div class="result">
-        <div class="metric"><small>Outer rim edge moves</small><strong id="outer">—</strong></div>
-        <div class="metric"><small>Inner rim edge moves</small><strong id="inner">—</strong></div>
-        <div class="metric"><small>Current tire diameter</small><strong id="oldDia">—</strong></div>
-        <div class="metric"><small>New tire diameter</small><strong id="newDia">—</strong></div>
-        <div class="metric"><small>Diameter difference</small><strong id="diaDiff">—</strong></div>
-        <div class="metric"><small>At indicated 60 mph</small><strong id="speed">—</strong></div>
-      </div>
-      <div class="status" id="status" role="status">Enter your specs and compare the setups.</div>
-      <p class="note">Positive outer movement means the new rim edge sits farther toward the fender. Positive inner movement means it extends farther toward suspension components. These are nominal rim-edge estimates, not measured tire sidewall positions or a guarantee of fitment.</p>
-    </section>
+/* Mobile-friendly layout: comfortable spacing, flexible controls, and no horizontal page overflow */
+html { scroll-padding-top: 16px; -webkit-text-size-adjust: 100%; }
+body { overflow-x: hidden; }
+.wrap { width: min(100% - 32px, 1180px); }
+*, *::before, *::after { box-sizing: border-box; }
+input, select, textarea, button { max-width: 100%; font: inherit; }
+.card, .vehicle-panel, .tool-results, .page-intro { min-width: 0; overflow-wrap: anywhere; }
+.nav { align-items: center; }
+@media (max-width: 760px) {
+  .wrap { width: min(100% - 28px, 1180px); }
+  .nav { gap: 12px; padding-top: 14px; padding-bottom: 14px; }
+  .nav-links { width: 100%; display: flex; flex-wrap: wrap; gap: 7px; }
+  .nav-links a, .nav-links summary { padding: 10px 11px; font-size: .82rem; }
+  .nav-links details { max-width: 100%; }
+  .dropdown { max-width: calc(100vw - 36px); }
+  .hero { padding: 28px 20px 24px; margin-top: 14px; }
+  .hero h1 { font-size: clamp(2rem, 9vw, 3.4rem); line-height: 1.02; overflow-wrap: anywhere; }
+  .card, .vehicle-panel { padding: 16px; }
+  .fields, .field-grid, .vehicle-grid, .problem-form, .grid, .three { grid-template-columns: minmax(0, 1fr) !important; }
+  .metric-grid { grid-template-columns: minmax(0, 1fr); }
+  .tool-actions { display: grid; grid-template-columns: minmax(0, 1fr); }
+  .tool-actions button, button, input, select, textarea { min-height: 44px; }
+  .field input, .vehicle-tool input, .vehicle-tool select, select, textarea { width: 100%; min-width: 0; }
+  .page-cards, .guide-list { grid-template-columns: minmax(0, 1fr); }
+  table { display: block; max-width: 100%; overflow-x: auto; }
+  footer .links { display: flex; flex-wrap: wrap; gap: 12px; }
+}
+@media (max-width: 380px) {
+  .wrap { width: calc(100% - 22px); }
+  .brand { font-size: .9rem; }
+  .nav-links a, .nav-links summary { padding: 9px; font-size: .78rem; }
+  .hero { padding: 24px 16px 20px; }
+  .card, .vehicle-panel { padding: 13px; }
+}
 
 
-    <section class="section vehicle-tool" aria-labelledby="vehicle-tool-title">
-      <h2 id="vehicle-tool-title">Vehicle, Suspension &amp; Fender Comparison</h2>
-      <p class="muted">Choose a vehicle and compare ride-height changes, tire sizing, and estimated wheel position. Vehicle lookup identifies the car; exact fender and suspension measurements must be verified for the specific trim and chassis.</p>
+/* Shared responsive navigation and phone/tablet layout */
+html { scroll-padding-top: 18px; -webkit-text-size-adjust: 100%; }
+*, *::before, *::after { box-sizing: border-box; }
+body { overflow-x: clip; }
+img, svg, video, canvas, iframe { max-width: 100%; }
+.wrap { width: min(100% - 32px, 1180px); }
+input, select, textarea, button { max-width: 100%; font: inherit; }
+.nav { align-items: center; min-width: 0; }
+.nav-links { min-width: 0; }
+.nav-links details { min-width: 0; }
+main, section, article, form, fieldset, .card, .vehicle-panel, .tool-results, .legal-panel { min-width: 0; }
+pre, code { overflow-wrap: anywhere; }
+table { max-width: 100%; }
+@media (max-width: 760px) {
+  .wrap { width: min(100% - 28px, 1180px); }
+  .nav { display: flex; flex-direction: column; align-items: stretch; gap: 12px; padding-top: 14px; padding-bottom: 14px; }
+  .brand { align-self: flex-start; }
+  .nav-links { display: flex; width: 100%; flex-wrap: wrap; gap: 7px; }
+  .nav-links a, .nav-links summary { min-height: 42px; padding: 10px 11px; font-size: .82rem; }
+  .nav-links details { max-width: 100%; }
+  .nav-links details[open] { flex-basis: 100%; }
+  .dropdown { position: static; width: 100%; min-width: 0; max-width: 100%; margin-top: 6px; box-shadow: none; }
+  .dropdown a { white-space: normal; }
+  .pill { align-self: flex-start; }
+  .hero, .page-intro { padding: 25px 18px 22px; margin-top: 14px; }
+  .hero h1, .page-intro h1 { font-size: clamp(1.9rem, 9vw, 3rem); line-height: 1.05; overflow-wrap: anywhere; }
+  .card, .vehicle-panel, .legal-panel, .tool-results { padding: 15px; }
+  .fields, .field-grid, .vehicle-grid, .problem-form, .grid, .three, .page-cards, .guide-list { grid-template-columns: minmax(0, 1fr) !important; }
+  .metric-grid { grid-template-columns: minmax(0, 1fr); }
+  .tool-actions { display: grid; grid-template-columns: minmax(0, 1fr); gap: 10px; }
+  .tool-actions button, button, input, select, textarea { min-height: 44px; }
+  .field input, .vehicle-tool input, .vehicle-tool select, select, textarea { width: 100%; min-width: 0; }
+  table { display: block; width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  footer .links { display: flex; flex-wrap: wrap; gap: 12px; }
+  h1, h2, h3, p, label, .metric { overflow-wrap: anywhere; }
+}
+@media (max-width: 380px) {
+  .wrap { width: calc(100% - 22px); }
+  .nav-links a, .nav-links summary { padding: 9px; font-size: .78rem; }
+  .hero, .page-intro { padding: 22px 15px 19px; }
+  .card, .vehicle-panel, .legal-panel, .tool-results { padding: 12px; }
+}
 
-      <div class="vehicle-grid">
-        <div class="vehicle-panel">
-          <h3>Vehicle details</h3>
-          <div class="field-grid">
-            <div>
-              <label for="vf-year">Model year</label>
-              <select id="vf-year"><option value="">Choose year</option></select>
-            </div>
-            <div>
-              <label for="vf-make">Make</label>
-              <select id="vf-make"><option value="">Choose make</option></select>
-            </div>
-            <div>
-              <label for="vf-model">Model</label>
-              <select id="vf-model" disabled><option value="">Choose make first</option></select>
-            </div>
-            <div>
-              <label for="vf-trim">Trim / configuration (optional)</label>
-              <input id="vf-trim" type="text" placeholder="e.g. GTI, Sport, 4-door">
-            </div>
-          </div>
-          <div class="tool-actions">
-            <button type="button" id="vf-lookup">Look up vehicle</button>
-          </div>
-          <p class="hint">This lookup uses the public NHTSA vehicle database for model-year, make, and model identification. It does not provide certified fender-lip, inner-clearance, or suspension-travel measurements.</p>
-          <p id="vf-vehicle-status" class="vehicle-status" role="status" aria-live="polite">Choose a year, make, and model to begin.</p>
-        </div>
 
-        <div class="vehicle-panel">
-          <h3>Measured vehicle baseline</h3>
-          <p class="hint">Enter measurements from the actual car, a trusted service manual, or a verified fitment source. Leave unknown values blank rather than guessing.</p>
-          <div class="field-grid">
-            <div>
-              <label for="vf-stock-gap">Stock tire-to-fender gap (in)</label>
-              <input id="vf-stock-gap" type="number" min="0" max="15" step="0.1" placeholder="e.g. 2.0">
-            </div>
-            <div>
-              <label for="vf-fender-clearance">Fender clearance from tire sidewall (in)</label>
-              <input id="vf-fender-clearance" type="number" min="-5" max="10" step="0.1" placeholder="e.g. 0.5">
-            </div>
-            <div>
-              <label for="vf-inner-clearance">Inner clearance to suspension (in)</label>
-              <input id="vf-inner-clearance" type="number" min="0" max="10" step="0.1" placeholder="e.g. 0.7">
-            </div>
-            <div>
-              <label for="vf-travel">Available bump travel (in)</label>
-              <input id="vf-travel" type="number" min="0" max="10" step="0.1" placeholder="e.g. 2.5">
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="vehicle-panel" style="margin-top:1rem">
-        <h3>Compare suspension and wheel changes</h3>
-        <div class="field-grid">
-          <div>
-            <label for="vf-drop">Suspension drop (in)</label>
-            <input id="vf-drop" type="number" min="0" max="8" step="0.1" value="1.5">
-          </div>
-          <div>
-            <label for="vf-camber">Camber change (degrees, negative = more negative)</label>
-            <input id="vf-camber" type="number" min="-10" max="10" step="0.1" value="0">
-          </div>
-          <div>
-            <label for="vf-old-width">Current wheel width (in)</label>
-            <input id="vf-old-width" type="number" min="4" max="15" step="0.5" value="7">
-          </div>
-          <div>
-            <label for="vf-old-offset">Current wheel offset (ET, mm)</label>
-            <input id="vf-old-offset" type="number" min="-100" max="150" step="1" value="47">
-          </div>
-          <div>
-            <label for="vf-new-width">New wheel width (in)</label>
-            <input id="vf-new-width" type="number" min="4" max="15" step="0.5" value="7.5">
-          </div>
-          <div>
-            <label for="vf-new-offset">New wheel offset (ET, mm)</label>
-            <input id="vf-new-offset" type="number" min="-100" max="150" step="1" value="47">
-          </div>
-          <div>
-            <label for="vf-old-tire">Current tire size (e.g. 205/55R16)</label>
-            <input id="vf-old-tire" type="text" value="205/55R16" placeholder="205/55R16">
-          </div>
-          <div>
-            <label for="vf-new-tire">New tire size (e.g. 225/45R17)</label>
-            <input id="vf-new-tire" type="text" value="225/45R17" placeholder="225/45R17">
-          </div>
-        </div>
-        <div class="tool-actions">
-          <button type="button" id="vf-compare">Calculate comparison</button>
-          <button type="button" class="secondary" id="vf-reset">Reset comparison</button>
-        </div>
-        <div id="vf-results" class="tool-results" aria-live="polite">
-          <strong>Ready to compare</strong>
-          <p class="hint">Enter the wheel and tire setup, then calculate. Results are geometric estimates, not a guarantee against rubbing.</p>
-        </div>
-      </div>
-      <p class="hint">Important: static wheel-position math cannot predict all real-world rubbing. Fender shape, tire brand and actual section width, alignment, steering angle, loaded ride height, suspension travel, bushings, and chassis tolerances all affect clearance. Never treat an unverified vehicle measurement as factory-accurate.</p>
-    </section>
-
-    <section class="section" aria-labelledby="before-title">
-      <h2 id="before-title">Before you order wheels</h2>
-      <div class="three">
-        <article class="mini">
-          <h3>Check your bolt pattern</h3>
-          <p>Make sure the wheel's bolt pattern matches your vehicle. Never assume a wheel fits based on diameter alone.</p>
-        </article>
-        <article class="mini">
-          <h3>Confirm hub bore &amp; hardware</h3>
-          <p>Check center bore, lug bolt or nut seat type, thread size, and safe engagement. Spacers may require specific longer hardware.</p>
-        </article>
-        <article class="mini">
-          <h3>Check real-world clearance</h3>
-          <p>Suspension, brakes, tire brand, ride height, alignment, and fender shape affect fit. Confirm fitment with a qualified professional before driving.</p>
-        </article>
-      </div>
-    </section>
-
-    <section class="section faq" aria-labelledby="faq-title">
-      <h2 id="faq-title">Wheel fitment FAQ</h2>
-      <details>
-        <summary>Does this calculator guarantee a wheel will fit?</summary>
-        <p>No. It compares dimensions mathematically, but cannot verify brake clearance, suspension clearance, fender clearance, load rating, or vehicle-specific fitment. Always confirm with a qualified wheel/tire professional.</p>
-      </details>
-      <details>
-        <summary>What does wheel offset mean?</summary>
-        <p>Offset (ET) is the distance in millimeters between the wheel's mounting face and its centerline. A higher positive offset generally moves the wheel farther inward; a lower offset generally moves it outward.</p>
-      </details>
-      <details>
-        <summary>Will a wider tire always stick out farther?</summary>
-        <p>Not always. Wheel width, offset, tire model, and the rim's measured width all affect the final position. This tool estimates nominal rim position only; tire sidewall shape can vary.</p>
-      </details>
-    </section>
-  </main>
-
-  <footer>
-    <div class="wrap">
-      <div class="links">
-        <a href="#top">Back to top</a>
-      </div>
-      <p>© <span id="year"></span> Fitment Finder. Informational estimates only. Verify specifications with your vehicle and wheel manufacturer before purchasing or driving.</p>
-      <p>Disclosure: Affiliate links, if added, may earn the site a commission at no extra cost to the buyer.</p>
-    </div>
-  </footer>
-
-  <script>
+/* Centered text-only brand and phone-friendly header refinement */
+.brand-wordmark { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px; align-self:center; text-align:center; text-decoration:none; min-width:0; width:100%; margin:0 auto 8px; padding:4px 0 8px; line-height:1; }
+.brand-fitment { color:#f5f6f8; font-size:clamp(1.55rem, 5.8vw, 2.35rem); font-weight:950; font-style:italic; letter-spacing:.075em; text-shadow:0 2px 0 #555, 0 4px 14px rgba(0,0,0,.5); }
+.brand-finder { color:#ff343b; font-size:clamp(1.7rem, 6.5vw, 2.65rem); font-weight:1000; font-style:italic; letter-spacing:.11em; text-shadow:0 2px 0 #7e1016, 0 4px 14px rgba(255,25,35,.16); }
+.brand-tagline { margin-top:5px; color:#aeb5c0; font-size:clamp(.48rem, 2.1vw, .68rem); font-weight:800; letter-spacing:.17em; line-height:1.4; }
+.nav { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:12px; width:min(100% - 28px, 1180px); margin-left:auto; margin-right:auto; padding-top:16px; padding-bottom:16px; }
+.nav-links { width:100%; justify-content:center; align-items:center; gap:8px; }
+.nav-links a, .nav-links summary { text-align:center; }
+.nav > .pill { align-self:center; text-align:center; }
+@media(max-width:600px) {
+ .nav { width:calc(100% - 24px); gap:10px; padding-top:12px; padding-bottom:12px; }
+ .brand-wordmark { margin-bottom:4px; padding-bottom:5px; }
+ .brand-fitment { letter-spacing:.06em; }
+ .brand-finder { letter-spacing:.09em; }
+ .brand-tagline { max-width:90vw; letter-spacing:.12em; }
+ .nav-links { display:flex; justify-content:center; gap:7px; }
+ .nav-links a, .nav-links summary { min-height:40px; padding:9px 10px; font-size:.78rem; }
+ .nav-links details { position:relative; }
+ .nav-links details[open] { flex-basis:100%; }
+ .nav-links .dropdown { z-index:10; }
+}
+</style></head><body><header class="wrap nav"><a class="brand brand-wordmark" href="index.html" aria-label="Fitment Finder home"><span class="brand-fitment">FITMENT</span><span class="brand-finder">FINDER</span><span class="brand-tagline">BETTER FITMENT. SMOOTHER RIDES.</span></a><nav class="nav-links" aria-label="Main navigation"><a class="active" href="index.html">Home / Tools</a><a class="" href="guides.html">Guides</a><a class="" href="problem-solver.html">Rubbing Solver</a><details><summary>About ▾</summary><div class="dropdown"><a href="about.html">About Fitment Finder</a><a href="privacy.html">Privacy Policy</a><a href="affiliate.html">Affiliate Disclosure</a><a href="contact.html">Contact</a></div></details></nav><div class="pill">Free Fitment Tools</div></header><main class="wrap" id="top"><div id="tools"></div><section aria-labelledby="hero-title" class="hero">
+<div class="eyebrow">Street / Track Fitment Lab</div>
+<h1 id="hero-title">Dial in your <span>fitment.</span></h1>
+<p>A wheel-and-tire fitment tool built for car people. Compare wheel offsets, estimate rim-edge movement, and check tire diameter changes before you spend your money.</p>
+</section><form id="fitment-form">
+<div class="grid">
+<section aria-labelledby="current-title" class="card">
+<h2 id="current-title">Current setup</h2>
+<p class="sub">Enter the wheel and tire specs on your car now.</p>
+<div class="fields">
+<div class="field">
+<label for="cw">Wheel width (in)</label>
+<input id="cw" max="15" min="4" name="cw" required="" step="0.25" type="number" value="7"/>
+</div>
+<div class="field">
+<label for="co">Wheel offset (ET, mm)</label>
+<input id="co" max="100" min="-100" name="co" required="" step="1" type="number" value="47"/>
+</div>
+<div class="field">
+<label for="ctw">Tire width (mm)</label>
+<input id="ctw" max="400" min="100" name="ctw" required="" step="1" type="number" value="205"/>
+</div>
+<div class="field">
+<label for="ctr">Aspect ratio (%)</label>
+<input id="ctr" max="100" min="20" name="ctr" required="" step="1" type="number" value="55"/>
+</div>
+<div class="field">
+<label for="cr">Wheel diameter (in)</label>
+<input id="cr" max="30" min="10" name="cr" required="" step="0.5" type="number" value="16"/>
+</div>
+</div>
+</section>
+<section aria-labelledby="new-title" class="card">
+<h2 id="new-title">New setup</h2>
+<p class="sub">Enter the specs you're thinking of buying.</p>
+<div class="fields">
+<div class="field">
+<label for="nw">Wheel width (in)</label>
+<input id="nw" max="15" min="4" name="nw" required="" step="0.25" type="number" value="7.5"/>
+</div>
+<div class="field">
+<label for="no">Wheel offset (ET, mm)</label>
+<input id="no" max="100" min="-100" name="no" required="" step="1" type="number" value="47"/>
+</div>
+<div class="field">
+<label for="ntw">Tire width (mm)</label>
+<input id="ntw" max="400" min="100" name="ntw" required="" step="1" type="number" value="225"/>
+</div>
+<div class="field">
+<label for="ntr">Aspect ratio (%)</label>
+<input id="ntr" max="100" min="20" name="ntr" required="" step="1" type="number" value="45"/>
+</div>
+<div class="field">
+<label for="nr">Wheel diameter (in)</label>
+<input id="nr" max="30" min="10" name="nr" required="" step="0.5" type="number" value="17"/>
+</div>
+</div>
+<button class="btn full" type="submit">Compare my fitment</button>
+</section>
+</div>
+</form><section aria-atomic="false" aria-labelledby="results-title" aria-live="polite" class="card">
+<h2 id="results-title">Your fitment comparison</h2>
+<p class="sub">Estimates are based on the dimensions entered above.</p>
+<div class="result">
+<div class="metric"><small>Outer rim edge moves</small><strong id="outer">—</strong></div>
+<div class="metric"><small>Inner rim edge moves</small><strong id="inner">—</strong></div>
+<div class="metric"><small>Current backspacing (approx.)</small><strong id="oldBack">—</strong></div>
+<div class="metric"><small>New backspacing (approx.)</small><strong id="newBack">—</strong></div>
+<div class="metric"><small>Current tire diameter</small><strong id="oldDia">—</strong></div>
+<div class="metric"><small>New tire diameter</small><strong id="newDia">—</strong></div>
+<div class="metric"><small>Diameter difference</small><strong id="diaDiff">—</strong></div>
+<div class="metric"><small>At indicated 60 mph</small><strong id="speed">—</strong></div>
+</div>
+<div class="status" id="status" role="status">Enter your specs and compare the setups.</div>
+<p class="note">Backspacing is estimated from nominal wheel width and offset; actual measured backspacing can vary by wheel design and flange shape.</p>
+<p class="note">Positive outer movement means the new rim edge sits farther toward the fender. Positive inner movement means it extends farther toward suspension components. These are nominal rim-edge estimates, not measured tire sidewall positions or a guarantee of fitment.</p>
+</section><section aria-labelledby="vehicle-tool-title" class="section vehicle-tool">
+<h2 id="vehicle-tool-title">Vehicle, Suspension &amp; Fender Comparison</h2>
+<p class="muted">Choose a vehicle and compare ride-height changes, tire sizing, and estimated wheel position. Vehicle lookup identifies the car; exact fender and suspension measurements must be verified for the specific trim and chassis.</p>
+<div class="vehicle-grid">
+<div class="vehicle-panel">
+<h3>Vehicle details</h3>
+<div class="field-grid">
+<div>
+<label for="vf-year">Model year</label>
+<select id="vf-year"><option value="">Choose year</option></select>
+</div>
+<div>
+<label for="vf-make">Make</label>
+<select id="vf-make"><option value="">Choose make</option></select>
+</div>
+<div>
+<label for="vf-model">Model</label>
+<select disabled="" id="vf-model"><option value="">Choose make first</option></select>
+</div>
+<div>
+<label for="vf-trim">Trim / configuration (optional)</label>
+<input id="vf-trim" placeholder="e.g. GTI, Sport, 4-door" type="text"/>
+</div>
+</div>
+<div class="tool-actions">
+<button id="vf-lookup" type="button">Look up vehicle</button>
+</div>
+<p class="hint">This lookup uses the public NHTSA vehicle database for model-year, make, and model identification. It does not provide certified fender-lip, inner-clearance, or suspension-travel measurements.</p>
+<p aria-live="polite" class="vehicle-status" id="vf-vehicle-status" role="status">Choose a year, make, and model to begin.</p>
+</div>
+<div class="vehicle-panel">
+<h3>Measured vehicle baseline</h3>
+<p class="hint">Enter measurements from the actual car, a trusted service manual, or a verified fitment source. Leave unknown values blank rather than guessing.</p>
+<div class="field-grid">
+<div>
+<label for="vf-stock-gap">Stock tire-to-fender gap (in)</label>
+<input id="vf-stock-gap" max="15" min="0" placeholder="e.g. 2.0" step="0.1" type="number"/>
+</div>
+<div>
+<label for="vf-fender-clearance">Fender clearance from tire sidewall (in)</label>
+<input id="vf-fender-clearance" max="10" min="-5" placeholder="e.g. 0.5" step="0.1" type="number"/>
+</div>
+<div>
+<label for="vf-inner-clearance">Inner clearance to suspension (in)</label>
+<input id="vf-inner-clearance" max="10" min="0" placeholder="e.g. 0.7" step="0.1" type="number"/>
+</div>
+<div>
+<label for="vf-travel">Available bump travel (in)</label>
+<input id="vf-travel" max="10" min="0" placeholder="e.g. 2.5" step="0.1" type="number"/>
+</div>
+</div>
+</div>
+</div>
+<div class="vehicle-panel" style="margin-top:1rem">
+<h3>Compare suspension and wheel changes</h3>
+<div class="field-grid">
+<div>
+<label for="vf-drop">Suspension drop (in)</label>
+<input id="vf-drop" max="8" min="0" step="0.1" type="number" value="1.5"/>
+</div>
+<div>
+<label for="vf-camber">Camber change (degrees, negative = more negative)</label>
+<input id="vf-camber" max="10" min="-10" step="0.1" type="number" value="0"/>
+</div>
+<div>
+<label for="vf-old-width">Current wheel width (in)</label>
+<input id="vf-old-width" max="15" min="4" step="0.5" type="number" value="7"/>
+</div>
+<div>
+<label for="vf-old-offset">Current wheel offset (ET, mm)</label>
+<input id="vf-old-offset" max="150" min="-100" step="1" type="number" value="47"/>
+</div>
+<div>
+<label for="vf-new-width">New wheel width (in)</label>
+<input id="vf-new-width" max="15" min="4" step="0.5" type="number" value="7.5"/>
+</div>
+<div>
+<label for="vf-new-offset">New wheel offset (ET, mm)</label>
+<input id="vf-new-offset" max="150" min="-100" step="1" type="number" value="47"/>
+</div>
+<div>
+<label for="vf-old-tire">Current tire size (e.g. 205/55R16)</label>
+<input id="vf-old-tire" placeholder="205/55R16" type="text" value="205/55R16"/>
+</div>
+<div>
+<label for="vf-new-tire">New tire size (e.g. 225/45R17)</label>
+<input id="vf-new-tire" placeholder="225/45R17" type="text" value="225/45R17"/>
+</div>
+</div>
+<div class="tool-actions">
+<button id="vf-compare" type="button">Calculate comparison</button>
+<button class="secondary" id="vf-reset" type="button">Reset comparison</button>
+</div>
+<div aria-live="polite" class="tool-results" id="vf-results">
+<strong>Ready to compare</strong>
+<p class="hint">Enter the wheel and tire setup, then calculate. Results are geometric estimates, not a guarantee against rubbing.</p>
+</div>
+</div>
+<p class="hint">Important: static wheel-position math cannot predict all real-world rubbing. Fender shape, tire brand and actual section width, alignment, steering angle, loaded ride height, suspension travel, bushings, and chassis tolerances all affect clearance. Never treat an unverified vehicle measurement as factory-accurate.</p>
+</section><section aria-labelledby="before-title" class="section">
+<h2 id="before-title">Before you order wheels</h2>
+<div class="three">
+<article class="mini">
+<h3>Check your bolt pattern</h3>
+<p>Make sure the wheel's bolt pattern matches your vehicle. Never assume a wheel fits based on diameter alone.</p>
+</article>
+<article class="mini">
+<h3>Confirm hub bore &amp; hardware</h3>
+<p>Check center bore, lug bolt or nut seat type, thread size, and safe engagement. Spacers may require specific longer hardware.</p>
+</article>
+<article class="mini">
+<h3>Check real-world clearance</h3>
+<p>Suspension, brakes, tire brand, ride height, alignment, and fender shape affect fit. Confirm fitment with a qualified professional before driving.</p>
+</article>
+</div>
+</section><section aria-labelledby="faq-title" class="section faq">
+<h2 id="faq-title">Wheel fitment FAQ</h2>
+<details>
+<summary>Does this calculator guarantee a wheel will fit?</summary>
+<p>No. It compares dimensions mathematically, but cannot verify brake clearance, suspension clearance, fender clearance, load rating, or vehicle-specific fitment. Always confirm with a qualified wheel/tire professional.</p>
+</details>
+<details>
+<summary>What does wheel offset mean?</summary>
+<p>Offset (ET) is the distance in millimeters between the wheel's mounting face and its centerline. A higher positive offset generally moves the wheel farther inward; a lower offset generally moves it outward.</p>
+</details>
+<details>
+<summary>Will a wider tire always stick out farther?</summary>
+<p>Not always. Wheel width, offset, tire model, and the rim's measured width all affect the final position. This tool estimates nominal rim position only; tire sidewall shape can vary.</p>
+</details>
+</section><section aria-labelledby="responsibility-title" class="section" id="responsibility">
+<h2 id="responsibility-title">Important Fitment &amp; Safety Disclaimer</h2>
+<div class="notice"><strong>Use at your own risk.</strong> Results are approximate calculations, not a guarantee of fitment, safety, legality, or performance. Actual clearance depends on vehicle trim, wheel construction, tire make/model, alignment, load, steering angle, suspension travel, brake components, manufacturing tolerances, and modifications. Confirm bolt pattern, hub bore, load rating, hardware, brake clearance, and dynamic tire clearance with the vehicle and component manufacturers or a qualified professional. Never drive a vehicle that rubs, vibrates abnormally, or has uncertain wheel fastening. The vehicle owner is responsible for independently verifying compatibility before purchase and use.</div>
+</section></main><footer><div class="wrap"><div class="links"><a href="index.html">Home</a><a href="index.html#tools">Tools</a><a href="guides.html">Guides</a><a href="problem-solver.html">Rubbing Solver</a><a href="about.html">About</a><a href="privacy.html">Privacy</a><a href="affiliate.html">Affiliate Disclosure</a><a href="contact.html">Contact</a></div><p>© <span id="year"></span> Fitment Finder. Informational estimates only. Verify specifications with your vehicle and wheel manufacturer before purchasing or driving.</p><p>Fitment calculations are estimates and do not guarantee compatibility or safety.</p></div></footer><script>document.getElementById('year').textContent=new Date().getFullYear();document.querySelectorAll('.nav-links details').forEach(d=>{document.addEventListener('click',e=>{if(!d.contains(e.target))d.open=false})});</script><script>
     "use strict";
 
     const $ = (id) => document.getElementById(id);
@@ -692,7 +780,7 @@
       ["nr", "New wheel diameter", 10, 30]
     ];
 
-    const outputIds = ["outer", "inner", "oldDia", "newDia", "diaDiff", "speed"];
+    const outputIds = ["outer", "inner", "oldDia", "newDia", "diaDiff", "speed", "oldBack", "newBack"];
 
     function getValue(id) {
       return Number($(id).value);
@@ -759,6 +847,9 @@
 
       $("outer").textContent = formatSignedMm(outerMovement);
       $("inner").textContent = formatSignedMm(innerMovement);
+      // Approximate backspacing: half nominal wheel width plus offset, converted to inches.
+      $("oldBack").textContent = `${(cw / 2 + co / 25.4).toFixed(2)} in`;
+      $("newBack").textContent = `${(nw / 2 + no / 25.4).toFixed(2)} in`;
       $("oldDia").textContent = `${(oldDiameter / 25.4).toFixed(2)} in`;
       $("newDia").textContent = `${(newDiameter / 25.4).toFixed(2)} in`;
       $("diaDiff").textContent = `${formatSignedMm(diameterDifference)} (${percentageDifference > 0 ? "+" : ""}${percentageDifference.toFixed(2)}%)`;
@@ -775,6 +866,7 @@
 
     $("fitment-form").addEventListener("submit", calculateFitment);
     $("year").textContent = new Date().getFullYear();
+
     calculateFitment();
 
   // Vehicle picker uses NHTSA's public vPIC API for vehicle identity only.
@@ -911,6 +1003,4 @@
     loadMakes();
   })();
 
-  </script>
-</body>
-</html>
+  </script></body></html>
